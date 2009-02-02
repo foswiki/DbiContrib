@@ -1,0 +1,5 @@
+# Dependencies for DbiContrib
+# Example:
+# Time::ParseDate,>=2003.0211,cpan,Required.
+# Foswiki::Plugins,>=1.15,perl,Foswiki 4.1 release.
+DBI,>=1,cpan,Required.

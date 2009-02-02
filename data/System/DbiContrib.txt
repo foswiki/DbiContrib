@@ -1,0 +1,37 @@
+---+!! !DbiContrib
+<!--
+One line description, required for extensions repository catalog.
+   * Set SHORTDESCRIPTION = API for other Contribs and plugins to use to abstract Database accesses
+-->
+%SHORTDESCRIPTION%
+
+%TOC%
+
+---++ Usage
+
+This contrib is used to abstract Database access from other Contribs.
+It assumes that all Contribs and Plugins are talking to the same Database, and has not been built for scalability or speed yet.
+
+To configure it, goto the Extensions::DbiContrib section of =configure= (near the end).
+The ={DbiContrib}{DBI_dsn}= specifies the 'DBI DSN'
+'dbi' : {the database type} : {the database name} : {the host}. ={DbiContrib}{DBI_username}= and ={DbiContrib}{DBI_password}= need to be a database user that has permission to log in from the host Foswiki is running on.
+
+---++ Installation Instructions
+
+%$INSTALL_INSTRUCTIONS%
+
+---++ Contrib Info
+
+
+|  Contrib Author(s): | Copyright 2008-2009, Sven Dowideit, SvenDowideit@fosiki.com |
+|  Copyright: | &copy; |
+|  License: | [[http://www.gnu.org/licenses/gpl.html][GPL (Gnu General Public License v3)]] |
+|  Contrib Version: | %$VERSION% |
+|  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  Dependencies: | %$DEPENDENCIES% |
+|  Contrib Home: | http://foswiki.org/Extensions/DbiContrib |
+
+
+__Related Topics:__ %SYSTEMWEB%.Contribs, %SYSTEMWEB%.DeveloperDocumentationCategory, %SYSTEMWEB%.AdminDocumentationCategory, %SYSTEMWEB%.SitePreferences
+
+<!-- Do _not_ attempt to edit this topic; it is auto-generated. Please add comments/questions/remarks to the feedback topic on foswiki.org instead. -->

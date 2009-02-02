@@ -1,0 +1,4 @@
+# Release manifest for DbiContrib
+data/System/DbiContrib.txt 0644 Documentation
+lib/Foswiki/Contrib/DbiContrib.pm 0644 Perl module
+lib/Foswiki/Contrib/DbiContrib/Config.spec
