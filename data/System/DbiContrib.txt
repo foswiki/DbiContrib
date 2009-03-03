@@ -32,6 +32,6 @@ The ={DbiContrib}{DBI_dsn}= specifies the 'DBI DSN'
 |  Contrib Home: | http://foswiki.org/Extensions/DbiContrib |
 
 
-__Related Topics:__ %SYSTEMWEB%.Contribs, %SYSTEMWEB%.DeveloperDocumentationCategory, %SYSTEMWEB%.AdminDocumentationCategory, %SYSTEMWEB%.SitePreferences
+__Related Topics:__ %SYSTEMWEB%.Contribs, %SYSTEMWEB%.DeveloperDocumentationCategory, %SYSTEMWEB%.AdminDocumentationCategory, %SITEPREFERENCES%
 
 <!-- Do _not_ attempt to edit this topic; it is auto-generated. Please add comments/questions/remarks to the feedback topic on foswiki.org instead. -->
