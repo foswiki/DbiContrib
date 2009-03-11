@@ -101,7 +101,7 @@ sub connect {
                 ( $this->{dsn}, $this->{dsn_user}, $this->{dsn_password} ) );
             return;
         }
-        $this->{DB}->{AutoCommit} = 0;
+        $this->{DB}->{AutoCommit} = 0 if ($this->{dsn} =~ /:mysql:/);
         $this->{DB}->{RaiseError} = 1;
     }
     return $this->{DB};
