@@ -22,9 +22,9 @@ use Error qw( :try );
 
 use vars qw( $VERSION $RELEASE $SHORTDESCRIPTION $pluginName $DB_instance);
 
-$VERSION    = '$Rev: 0 (2008) $';
+$VERSION    = '$Rev: 0 (2009) $';
 $pluginName = 'DbiContrib';
-$RELEASE    = '';
+$RELEASE    = 'March 2009';
 $SHORTDESCRIPTION =
   'API for other Contribs and plugins to use to abstract Database accesses';
 
@@ -33,27 +33,25 @@ $SHORTDESCRIPTION =
 
 =pod
 
----++ ClassMethod new( $session ) -> $object
+---++ ClassMethod new($options ) -> $object
 
 =cut
 
 sub new {
     my ( $class, $options ) = @_;
 
-    #yep, we're a singleton
-    return $DB_instance if ( defined($DB_instance) );
+   my $this = bless( {}, $class );
 
-    my $this = bless( {}, $class );
-    $DB_instance = $this;
-
-    $this->{dsn}          = $Foswiki::cfg{DbiContrib}{DBI_dsn};
-    $this->{dsn_user}     = $Foswiki::cfg{DbiContrib}{DBI_username};
-    $this->{dsn_password} = $Foswiki::cfg{DbiContrib}{DBI_password};
+    $this->{dsn}          = $options->{dsn} || $Foswiki::cfg{DbiContrib}{DBI_dsn};
+    $this->{dsn_user}     = $options->{dsn_user} || $Foswiki::cfg{DbiContrib}{DBI_username};
+    $this->{dsn_password} = $options->{dsn_password} || $Foswiki::cfg{DbiContrib}{DBI_password};
+    
+    $options->{AutoCommit} = 0 if ($options->{dsn} =~ /:mysql:/);
+    $options->{RaiseError} = 1;
+    #$options->{Profile} = 2;       #will output scads of profiling into your error log
+    
     $this->{dsn_options}  = $options;
-
-    #    unless ( $this->{dsn} =~ /mysql/i ) {
-    #        die "only mysql supported";
-    #    }
+    $this->{Results} = {};
 
     return $this;
 }
@@ -71,39 +69,43 @@ documentation" of the live fields in the object.
 
 sub finish {
     my $this = shift;
-    if ( defined($DB_instance) ) {
-        $this->disconnect();
-        undef $DB_instance;
-    }
+    $this->disconnect();
+    undef $this->{DB};
+    
+    $this->{Results} = {};
+    undef $this->{Results};
+
     return;
 }
 
 =pod
 
+---++ connect() 
+returns a DBI handle to a connection
 
+used internally, and can be used to get direct access to DBI
 
 =cut
 
 sub connect {
     my $this = shift;
+    
+    return $this->{DB} if (defined($this->{DB}));
 
-    unless ( defined( $this->{DB} ) ) {    #
-        if (
-            !(
-                $this->{DB} = DBI->connect(
-                    $this->{dsn}, $this->{dsn_user}, $this->{dsn_password}, $this->{dsn_options}
-                )
-            )
-          )
-        {
-            print STDERR "Cannot connect: $DBI::errstr \n\n"
-              . join( '___',
-                ( $this->{dsn}, $this->{dsn_user}, $this->{dsn_password} ) );
-            return;
-        }
-        $this->{DB}->{AutoCommit} = 0 if ($this->{dsn} =~ /:mysql:/);
-        $this->{DB}->{RaiseError} = 1;
+    $this->{DB} = DBI->connect_cached(
+                    $this->{dsn}, 
+                    $this->{dsn_user}, 
+                    $this->{dsn_password}, 
+                    $this->{dsn_options}
+                );
+    if (!$this->{DB})
+    {
+        print STDERR "Cannot connect: $DBI::errstr \n\n"
+          . join( '___',
+            ( $this->{dsn}, $this->{dsn_user}, $this->{dsn_password} ) );
+        return;
     }
+
     return $this->{DB};
 }
 
@@ -125,8 +127,9 @@ sub disconnect {
     return;
 }
 
-#returns an ref to an array dataset of rows
+#returns an ref to an array dataset of rows (NOT a hash)
 #dbSelect(query, @list of params to query)
+#DEPRECATED
 sub dbSelect {
     my $this   = shift;
     my $query  = shift;
@@ -141,16 +144,12 @@ sub dbSelect {
 
     my $dbh = $this->connect();
     try {
-
-        #$dbh->{Profile} = 2;
         my $sth = $dbh->prepare($query);
         $sth->execute(@params);
         my $array_ref = $sth->fetchall_arrayref();
 
         #use Data::Dumper;
         #    print STDERR "cached: ".Dumper($hash_ref)."\n";
-
-        #return $array_ref;
 
         $this->{Results}{$key} = $array_ref
           if ( defined( $array_ref->[0][0] ) );
@@ -167,8 +166,47 @@ sub dbSelect {
     return $this->{Results}{$key};
 }
 
+#returns a ref to an array of refs to hashs - indexed by column name
+sub select {
+    my $this   = shift;
+    my $query  = shift;
+    my @params = @_;
+
+    my $key = "$query : " . join( '-', @params );
+
+    #print STDERR "getHashRef($key)\n";
+    #is it cached in memory?
+    return $this->{Results}{$key}
+      if ( defined( $this->{Results}{$key} ) );
+
+    my $dbh = $this->connect();
+    try {
+        my $sth = $dbh->prepare($query);
+        $sth->execute(@params);
+	#return a ref to an array containing refs to hashes
+        my $array_ref = $sth->fetchall_arrayref({});
+
+        #use Data::Dumper;
+        #    print STDERR "cached: ".Dumper($hash_ref)."\n";
+
+        $this->{Results}{$key} = $array_ref
+          if ( defined( $array_ref->[0] ) );
+    }
+    catch Error::Simple with {
+        $this->{error} = $!;
+        print STDERR "            ERROR: fetch_select($key) : $! : ("
+           . $dbh->err .' : '. $dbh->errstr . ')';
+
+        #$this->{session}->writeWarning("ERROR: fetch_select($key) : $!");
+        my @array = ();
+        $this->{Results}{$key} = \@array;
+    };
+    return $this->{Results}{$key};
+}
+
 #dbReplace(query, @list of params to query)
 #replace or insert
+#DEPRECATED
 sub dbInsert {
     my $this   = shift;
     my $query  = shift;
@@ -177,8 +215,6 @@ sub dbInsert {
 
     my $dbh = $this->connect();
     try {
-
-        #$dbh->{Profile} = 2;
         $rows = $dbh->do( $query, undef, @params );
     }
     catch Error::Simple with {

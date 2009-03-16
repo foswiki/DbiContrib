@@ -10,11 +10,13 @@ One line description, required for extensions repository catalog.
 ---++ Usage
 
 This contrib is used to abstract Database access from other Contribs.
-It assumes that all Contribs and Plugins are talking to the same Database, and has not been built for scalability or speed yet.
 
-To configure it, goto the Extensions::DbiContrib section of =configure= (near the end).
+To configure the 'default' database, goto the Extensions::DbiContrib section of =configure= (near the end).
 The ={DbiContrib}{DBI_dsn}= specifies the 'DBI DSN'
-'dbi' : {the database type} : {the database name} : {the host}. ={DbiContrib}{DBI_username}= and ={DbiContrib}{DBI_password}= need to be a database user that has permission to log in from the host Foswiki is running on.
+'dbi' : {the database type} : {the database name} : {the host}. ={DbiContrib}{DBI_username}= and ={DbiContrib}{DBI_password}= 
+need to be a database user that has permission to log in from the host Foswiki is running on.
+
+other Contribs can specify different DBI dsn's and options.
 
 ---++ Installation Instructions
 
@@ -28,6 +30,7 @@ The ={DbiContrib}{DBI_dsn}= specifies the 'DBI DSN'
 |  License: | [[http://www.gnu.org/licenses/gpl.html][GPL (Gnu General Public License v3)]] |
 |  Contrib Version: | %$VERSION% |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  March 2009: | change to be multi-database |
 |  Dependencies: | %$DEPENDENCIES% |
 |  Contrib Home: | http://foswiki.org/Extensions/DbiContrib |
 
