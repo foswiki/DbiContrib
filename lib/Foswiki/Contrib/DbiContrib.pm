@@ -19,6 +19,7 @@ use warnings;
 
 use DBI;
 use Error qw( :try );
+use Assert;
 
 use vars qw( $VERSION $RELEASE $SHORTDESCRIPTION $pluginName $DB_instance);
 
@@ -46,9 +47,9 @@ sub new {
     $this->{dsn_user}     = $options->{dsn_user} || $Foswiki::cfg{DbiContrib}{DBI_username};
     $this->{dsn_password} = $options->{dsn_password} || $Foswiki::cfg{DbiContrib}{DBI_password};
     
-    $options->{AutoCommit} = 0 if ($options->{dsn} =~ /:mysql:/);
+    $options->{AutoCommit} = 0 if ($this->{dsn} =~ /:mysql:/);
     $options->{RaiseError} = 1;
-    #$options->{Profile} = 2;       #will output scads of profiling into your error log
+  #  $options->{Profile} = 5;       #will output scads of profiling into your error log
     
     $this->{dsn_options}  = $options;
     $this->{Results} = {};
@@ -89,27 +90,22 @@ used internally, and can be used to get direct access to DBI
 
 sub connect {
     my $this = shift;
-    
+
     return $this->{DB} if (defined($this->{DB}));
 
-    try {
-        $this->{DB} = DBI->connect_cached(
-                        $this->{dsn}, 
-                        $this->{dsn_user}, 
-                        $this->{dsn_password}, 
-                        $this->{dsn_options}
-                    );
-        if (!$this->{DB})
-        {
-            print STDERR "Cannot connect: $DBI::errstr \n\n"
-              . join( '___',
-                ( $this->{dsn}, $this->{dsn_user}, $this->{dsn_password} ) );
-            return;
-        }
-    }   catch Error::Simple with {
-        $this->{error} = $!;
-        print STDERR "            ERROR: connect: $! : (";
-      }
+    $this->{DB} = DBI->connect_cached(
+                    $this->{dsn}, 
+                    $this->{dsn_user}, 
+                    $this->{dsn_password}, 
+                    $this->{dsn_options}
+                );
+    if (!$this->{DB})
+    {
+        print STDERR "Cannot connect: $DBI::errstr \n\n"
+          . join( '___',
+            ( $this->{dsn}, $this->{dsn_user}, $this->{dsn_password} ) );
+        return;
+    }
 
     return $this->{DB};
 }
@@ -155,14 +151,14 @@ sub dbSelect {
 
         #use Data::Dumper;
         #    print STDERR "cached: ".Dumper($hash_ref)."\n";
+#return  $array_ref;
 
         $this->{Results}{$key} = $array_ref
           if ( defined( $array_ref->[0][0] ) );
     }
     catch Error::Simple with {
         $this->{error} = $!;
-        print STDERR "            ERROR: fetch_select($key) : $! : ("
-          . $dbh->errstr . ')';
+        print STDERR "            ERROR: fetch_select($key) : $! : (";# . $dbh->errstr . ')';
 
         #$this->{session}->writeWarning("ERROR: fetch_select($key) : $!");
         my @array = ();
@@ -176,6 +172,9 @@ sub select {
     my $this   = shift;
     my $query  = shift;
     my @params = @_;
+
+    ASSERT($query);
+    ASSERT(@params);
 
     my $key = "$query : " . join( '-', @params );
 
@@ -192,15 +191,16 @@ sub select {
         my $array_ref = $sth->fetchall_arrayref({});
 
         #use Data::Dumper;
-        #    print STDERR "cached: ".Dumper($hash_ref)."\n";
+        #print STDERR "cached: ".Dumper($array_ref)."\n";
+#return $array_ref;
 
         $this->{Results}{$key} = $array_ref
           if ( defined( $array_ref->[0] ) );
     }
     catch Error::Simple with {
         $this->{error} = $!;
-        print STDERR "            ERROR: fetch_select($key) : $! : ("
-           . $dbh->err .' : '. $dbh->errstr . ')';
+        #print STDERR "            ERROR: fetch_select($key) : $! : ("
+        #   . $dbh->err .' : '. $dbh->errstr . ')';
 
         #$this->{session}->writeWarning("ERROR: fetch_select($key) : $!");
         my @array = ();
@@ -225,8 +225,7 @@ sub dbInsert {
     catch Error::Simple with {
         $this->{error} = $!;
         my $key = "$query : " . join( '-', @params );
-        print STDERR "            ERROR: do($key) : $! : ("
-          . $dbh->errstr . ')';
+        print STDERR "            ERROR: do($key) : $! : (";# . $dbh->errstr . ')';
 
         #$this->{session}->writeWarning("ERROR: do($key) : $!");
     };
