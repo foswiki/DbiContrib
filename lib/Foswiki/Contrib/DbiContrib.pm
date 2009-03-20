@@ -92,19 +92,24 @@ sub connect {
     
     return $this->{DB} if (defined($this->{DB}));
 
-    $this->{DB} = DBI->connect_cached(
-                    $this->{dsn}, 
-                    $this->{dsn_user}, 
-                    $this->{dsn_password}, 
-                    $this->{dsn_options}
-                );
-    if (!$this->{DB})
-    {
-        print STDERR "Cannot connect: $DBI::errstr \n\n"
-          . join( '___',
-            ( $this->{dsn}, $this->{dsn_user}, $this->{dsn_password} ) );
-        return;
-    }
+    try {
+        $this->{DB} = DBI->connect_cached(
+                        $this->{dsn}, 
+                        $this->{dsn_user}, 
+                        $this->{dsn_password}, 
+                        $this->{dsn_options}
+                    );
+        if (!$this->{DB})
+        {
+            print STDERR "Cannot connect: $DBI::errstr \n\n"
+              . join( '___',
+                ( $this->{dsn}, $this->{dsn_user}, $this->{dsn_password} ) );
+            return;
+        }
+    }   catch Error::Simple with {
+        $this->{error} = $!;
+        print STDERR "            ERROR: connect: $! : (";
+      }
 
     return $this->{DB};
 }
