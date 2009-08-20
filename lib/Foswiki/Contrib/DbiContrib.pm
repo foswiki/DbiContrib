@@ -232,4 +232,8 @@ sub dbInsert {
     return $rows;
 }
 
+sub dbDelete {
+    return dbInsert(@_); 
+}
+
 1;
