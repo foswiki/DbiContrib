@@ -1,7 +1,7 @@
 ---+!! !DbiContrib
 <!--
 One line description, required for extensions repository catalog.
-   * Set SHORTDESCRIPTION = API for other Contribs and plugins to use to abstract Database accesses
+   * Set SHORTDESCRIPTION = API for other Contribs and plugins to use to abstract database accesses
 -->
 %SHORTDESCRIPTION%
 
@@ -9,14 +9,14 @@ One line description, required for extensions repository catalog.
 
 ---++ Usage
 
-This contrib is used to abstract Database access from other Contribs.
+This Contrib is used to abstract database access from other Contribs.
 
-To configure the 'default' database, goto the Extensions::DbiContrib section of =configure= (near the end).
-The ={DbiContrib}{DBI_dsn}= specifies the 'DBI DSN'
+To configure the default database, goto the =Extensions::DbiContrib= section of =configure= (near the end).
+The ={DbiContrib}{DBI_dsn}= specifies the "DBI DSN"
 'dbi' : {the database type} : {the database name} : {the host}. ={DbiContrib}{DBI_username}= and ={DbiContrib}{DBI_password}= 
 need to be a database user that has permission to log in from the host Foswiki is running on.
 
-other Contribs can specify different DBI dsn's and options.
+Other Contribs can specify different DBI DSN's and options.
 
 ---++ Installation Instructions
 
