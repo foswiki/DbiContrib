@@ -30,6 +30,7 @@ Other Contribs can specify different DBI DSN's and options.
 |  License: | [[http://www.gnu.org/licenses/gpl.html][GPL (Gnu General Public License v3)]] |
 |  Contrib Version: | %$VERSION% |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  1.0.1 (June 2010) | added dbDelete as an alias for dbInsert |
 |  March 2009: | change to be multi-database |
 |  Dependencies: | %$DEPENDENCIES% |
 |  Contrib Home: | http://foswiki.org/Extensions/DbiContrib |
