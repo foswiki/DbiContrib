@@ -174,7 +174,8 @@ sub select {
     my @params = @_;
 
     ASSERT($query);
-    ASSERT(@params);
+    #sorry, not all select statements have params.... select name from grouplist....
+    #ASSERT(@params);
 
     my $key = "$query : " . join( '-', @params );
 
