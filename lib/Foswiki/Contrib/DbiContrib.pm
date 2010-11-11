@@ -25,7 +25,7 @@ use vars qw( $VERSION $RELEASE $SHORTDESCRIPTION $pluginName $DB_instance);
 
 $VERSION    = '$Rev: 0 (2009) $';
 $pluginName = 'DbiContrib';
-$RELEASE    = '1.0.1';
+$RELEASE    = '1.0.2';
 $SHORTDESCRIPTION =
   'API for other Contribs and plugins to use to abstract Database accesses';
 

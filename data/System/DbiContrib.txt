@@ -25,17 +25,20 @@ Other Contribs can specify different DBI DSN's and options.
 ---++ Contrib Info
 
 
-|  Contrib Author(s): | Copyright 2008-2009, Sven Dowideit, SvenDowideit@fosiki.com |
+|  Contrib Author(s): | Copyright 2008-2009, Sven Dowideit, <noautolink>SvenDowideit@fosiki.com</noautolink> |
 |  Copyright: | &copy; |
 |  License: | [[http://www.gnu.org/licenses/gpl.html][GPL (Gnu General Public License v3)]] |
-|  Contrib Version: | %$VERSION% |
+|  Version: | %$VERSION% |
+|  Release: | %$RELEASE% |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  1.0.3 | Padraig Lennon: Foswikitask:Item10000 - Fix release number |
+|  1.0.2 | added dbDelete as an alias for dbInsert |
 |  1.0.1 (June 2010) | added dbDelete as an alias for dbInsert |
 |  March 2009: | change to be multi-database |
 |  Dependencies: | %$DEPENDENCIES% |
-|  Contrib Home: | http://foswiki.org/Extensions/DbiContrib |
+|  Contrib Home: | Foswiki:Extensions.%TOPIC% |
+|  Support: | Foswiki:Support.%TOPIC% |
 
-
-__Related Topics:__ %SYSTEMWEB%.Contribs, %SYSTEMWEB%.DeveloperDocumentationCategory, %SYSTEMWEB%.AdminDocumentationCategory, %SITEPREFERENCES%
+__Related Topics:__ %SYSTEMWEB%.InstalledPlugins, %SYSTEMWEB%.DeveloperDocumentationCategory, %SYSTEMWEB%.AdminDocumentationCategory
 
 <!-- Do _not_ attempt to edit this topic; it is auto-generated. Please add comments/questions/remarks to the feedback topic on foswiki.org instead. -->
